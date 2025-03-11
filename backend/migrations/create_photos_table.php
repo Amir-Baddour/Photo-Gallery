@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../connection/connection.php';
+require_once __DIR__ . '/../connection/db.php';
 
 try {
     $sql = "CREATE TABLE IF NOT EXISTS photos (

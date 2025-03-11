@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/UserModel.php';
 require_once __DIR__ . '/../models/UserSkeleton.php';
-
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
@@ -18,16 +17,19 @@ class UserController {
 
     /**
      * Handle user registration:
-     *   - Expects POST data: fullname, email, password
+     *   - Expects JSON body: { "fullname": "", "email": "", "password": "" }
      *   - Hashes the password with SHA256
      *   - Creates the user in the database
      */
     public function register() {
         header('Content-Type: application/json');
 
-        $fullname = $_POST['fullname'] ?? '';
-        $email    = $_POST['email'] ?? '';
-        $password = $_POST['password'] ?? '';
+        $inputJSON = file_get_contents('php://input');
+        $input = json_decode($inputJSON, true);
+
+        $fullname = $input['fullname'] ?? '';
+        $email    = $input['email'] ?? '';
+        $password = $input['password'] ?? '';
 
         if (empty($fullname) || empty($email) || empty($password)) {
             echo json_encode([
@@ -68,15 +70,18 @@ class UserController {
 
     /**
      * Handle user login:
-     *   - Expects POST data: email, password
+     *   - Expects JSON body: { "email": "", "password": "" }
      *   - Verifies the email/password
      *   - Returns a JWT if credentials are correct
      */
     public function login() {
         header('Content-Type: application/json');
 
-        $email    = $_POST['email'] ?? '';
-        $password = $_POST['password'] ?? '';
+        $inputJSON = file_get_contents('php://input');
+        $input = json_decode($inputJSON, true);
+
+        $email    = $input['email'] ?? '';
+        $password = $input['password'] ?? '';
 
         if (empty($email) || empty($password)) {
             echo json_encode([

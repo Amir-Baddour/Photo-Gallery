@@ -11,17 +11,20 @@ class PhotoController {
     
     /**
      * Create a new photo.
-     * Expects POST data: user_id, title, description, tags, image_path
+     * Expects JSON body with fields: user_id, title, description, tags, image_path
      */
     public function createPhoto() {
         header('Content-Type: application/json');
         
-        $user_id     = $_POST['user_id'] ?? null;
-        $title       = $_POST['title'] ?? '';
-        $description = $_POST['description'] ?? '';
-        $tags        = $_POST['tags'] ?? '';
-        $image_path  = $_POST['image_path'] ?? '';
-        
+        $inputJSON = file_get_contents('php://input');
+        $input = json_decode($inputJSON, true);
+
+        $user_id     = $input['user_id']     ?? null;
+        $title       = $input['title']       ?? '';
+        $description = $input['description'] ?? '';
+        $tags        = $input['tags']        ?? '';
+        $image_path  = $input['image_path']  ?? '';
+
         if (!$user_id || empty($title) || empty($image_path)) {
             echo json_encode([
                 'success' => false,
@@ -80,16 +83,19 @@ class PhotoController {
     
     /**
      * Update a photo.
-     * Expects POST data: id, title, description, tags, image_path
+     * Expects JSON body with fields: id, title, description, tags, image_path
      */
     public function updatePhoto() {
         header('Content-Type: application/json');
         
-        $id          = $_POST['id'] ?? null;
-        $title       = $_POST['title'] ?? '';
-        $description = $_POST['description'] ?? '';
-        $tags        = $_POST['tags'] ?? '';
-        $image_path  = $_POST['image_path'] ?? '';
+        $inputJSON = file_get_contents('php://input');
+        $input = json_decode($inputJSON, true);
+
+        $id          = $input['id']          ?? null;
+        $title       = $input['title']       ?? '';
+        $description = $input['description'] ?? '';
+        $tags        = $input['tags']        ?? '';
+        $image_path  = $input['image_path']  ?? '';
         
         if (!$id) {
             echo json_encode([
@@ -99,7 +105,6 @@ class PhotoController {
             return;
         }
         
-        // Retrieve the current photo record
         $photo = $this->photoModel->getPhotoById($id);
         if (!$photo) {
             echo json_encode([
@@ -109,7 +114,6 @@ class PhotoController {
             return;
         }
         
-        // Update the photo properties
         $photo->setTitle($title);
         $photo->setDescription($description);
         $photo->setTags($tags);
@@ -132,13 +136,13 @@ class PhotoController {
     
     /**
      * Delete a photo.
-     * Expects GET or POST parameter: id
+     * We can accept the ID from GET or JSON body. Let's keep GET for simplicity.
      */
     public function deletePhoto() {
         header('Content-Type: application/json');
         
-        $id = $_POST['id'] ?? $_GET['id'] ?? null;
-        
+        $id = $_GET['id'] ?? null;
+
         if (!$id) {
             echo json_encode([
                 'success' => false,
@@ -163,6 +167,7 @@ class PhotoController {
     
     /**
      * Retrieve all photos.
+     * Typically done via GET request with no body.
      */
     public function getAllPhotos() {
         header('Content-Type: application/json');
