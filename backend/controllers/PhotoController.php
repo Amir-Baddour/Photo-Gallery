@@ -10,30 +10,61 @@ class PhotoController {
     }
     
     /**
-     * Create a new photo.
-     * Expects JSON body with fields: user_id, title, description, tags, image_path
+     * Create a new photo via multipart/form-data.
+     * Expects:
+     *   - $_POST: user_id, title, description, tags
+     *   - $_FILES['image']: the uploaded file
      */
     public function createPhoto() {
         header('Content-Type: application/json');
         
-        $inputJSON = file_get_contents('php://input');
-        $input = json_decode($inputJSON, true);
+        // Read form fields from $_POST
+        $user_id     = $_POST['user_id']     ?? null;
+        $title       = $_POST['title']       ?? '';
+        $description = $_POST['description'] ?? '';
+        $tags        = $_POST['tags']        ?? '';
 
-        $user_id     = $input['user_id']     ?? null;
-        $title       = $input['title']       ?? '';
-        $description = $input['description'] ?? '';
-        $tags        = $input['tags']        ?? '';
-        $image_path  = $input['image_path']  ?? '';
-
-        if (!$user_id || empty($title) || empty($image_path)) {
+        // Validate required fields
+        if (!$user_id || empty($title)) {
             echo json_encode([
                 'success' => false,
-                'message' => 'Missing required fields (user_id, title, image_path).'
+                'message' => 'Missing required fields (user_id, title).'
             ]);
             return;
         }
+
+        // Handle the uploaded file if it exists
+        $imagePath = '';
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            // Where to store uploaded files (ensure this folder exists and is writable)
+            $uploadDir = __DIR__ . '/../uploads/';
+            // Generate a unique filename
+            $fileName = time() . '_' . basename($_FILES['image']['name']);
+            $targetFile = $uploadDir . $fileName;
+
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
+                // Store the relative path in the DB (e.g., "uploads/filename.jpg")
+                $imagePath = 'uploads/' . $fileName;
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error moving uploaded file.'
+                ]);
+                return;
+            }
+        } else {
+            // If no file was uploaded, you could handle that case or allow a blank path
+            echo json_encode([
+                'success' => false,
+                'message' => 'Image file is required.'
+            ]);
+            return;
+        }
+
+        // Create a PhotoSkeleton
+        $photo = new PhotoSkeleton(null, $user_id, $title, $description, $tags, $imagePath, null);
         
-        $photo = new PhotoSkeleton(null, $user_id, $title, $description, $tags, $image_path, null);
+        // Save to DB
         $photoId = $this->photoModel->createPhoto($photo);
         
         if ($photoId) {
@@ -82,21 +113,19 @@ class PhotoController {
     }
     
     /**
-     * Update a photo.
-     * Expects JSON body with fields: id, title, description, tags, image_path
+     * Update a photo via multipart/form-data.
+     * Expects:
+     *   - $_POST: id, title, description, tags
+     *   - $_FILES['image']: optional new file
      */
     public function updatePhoto() {
         header('Content-Type: application/json');
-        
-        $inputJSON = file_get_contents('php://input');
-        $input = json_decode($inputJSON, true);
-
-        $id          = $input['id']          ?? null;
-        $title       = $input['title']       ?? '';
-        $description = $input['description'] ?? '';
-        $tags        = $input['tags']        ?? '';
-        $image_path  = $input['image_path']  ?? '';
-        
+    
+        $id          = $_POST['id']          ?? null;
+        $title       = $_POST['title']       ?? '';
+        $description = $_POST['description'] ?? '';
+        $tags        = $_POST['tags']        ?? '';
+    
         if (!$id) {
             echo json_encode([
                 'success' => false,
@@ -104,22 +133,45 @@ class PhotoController {
             ]);
             return;
         }
-        
-        $photo = $this->photoModel->getPhotoById($id);
-        if (!$photo) {
+    
+        // Fetch existing photo as an associative array
+        $existingPhoto = $this->photoModel->getPhotoById($id);
+        if (!$existingPhoto) {
             echo json_encode([
                 'success' => false,
                 'message' => 'Photo not found.'
             ]);
             return;
         }
-        
-        $photo->setTitle($title);
-        $photo->setDescription($description);
-        $photo->setTags($tags);
-        $photo->setImagePath($image_path);
-        
-        $updatedRows = $this->photoModel->updatePhoto($photo);
+    
+        // Default to existing image path using array access
+        $imagePath = $existingPhoto['image_path'];
+    
+        // Check if a new file was uploaded
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../uploads/';
+            $fileName = time() . '_' . basename($_FILES['image']['name']);
+            $targetFile = $uploadDir . $fileName;
+    
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
+                $imagePath = 'uploads/' . $fileName;
+                // Optionally, delete the old file if needed.
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error moving uploaded file.'
+                ]);
+                return;
+            }
+        }
+    
+        // Update the photo array with new values
+        $existingPhoto['title'] = $title;
+        $existingPhoto['description'] = $description;
+        $existingPhoto['tags'] = $tags;
+        $existingPhoto['image_path'] = $imagePath;
+    
+        $updatedRows = $this->photoModel->updatePhoto($existingPhoto);
         
         if ($updatedRows) {
             echo json_encode([
@@ -134,9 +186,10 @@ class PhotoController {
         }
     }
     
+    
     /**
      * Delete a photo.
-     * We can accept the ID from GET or JSON body. Let's keep GET for simplicity.
+     * Expects GET parameter: id
      */
     public function deletePhoto() {
         header('Content-Type: application/json');
@@ -152,22 +205,29 @@ class PhotoController {
         }
         
         $deletedRows = $this->photoModel->deletePhoto($id);
-        if ($deletedRows) {
+        
+        if ($deletedRows === false) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Database error deleting photo.'
+            ]);
+        } elseif ($deletedRows === 0) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No photo found with that ID.'
+            ]);
+        } else {
             echo json_encode([
                 'success' => true,
                 'message' => 'Photo deleted successfully.'
             ]);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error deleting photo.'
-            ]);
         }
     }
+
+
     
     /**
      * Retrieve all photos.
-     * Typically done via GET request with no body.
      */
     public function getAllPhotos() {
         header('Content-Type: application/json');

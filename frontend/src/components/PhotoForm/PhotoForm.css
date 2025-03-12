@@ -1,0 +1,80 @@
+.photo-form-container {
+    width: 400px;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin: 1rem auto;
+    text-align: center;
+  }
+  
+  .photo-form-container h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .error-msg {
+    color: #ff4d4f;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  
+  .photo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .photo-form input,
+  .photo-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    resize: vertical;
+  }
+  
+  .photo-form textarea {
+    min-height: 80px;
+  }
+  
+  .photo-form-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .save-button {
+    flex: 1;
+    padding: 0.75rem;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+  }
+  
+  .save-button:hover {
+    background-color: #218838;
+  }
+  
+  .cancel-button {
+    flex: 1;
+    padding: 0.75rem;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 0.5rem;
+  }
+  
+  .cancel-button:hover {
+    background-color: #c82333;
+  }
+  
+
+  
+  
