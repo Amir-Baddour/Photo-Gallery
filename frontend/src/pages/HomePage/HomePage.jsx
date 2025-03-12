@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import NavBar from '../../components/NavBar/NavBar';
+import GalleryHeader from '../../components/GalleryHeader/GalleryHeader';
 import PhotoGallery from '../../components/PhotoGallery/PhotoGallery';
 import PhotoForm from '../../components/PhotoForm/PhotoForm';
 import Modal from '../../components/Modal/Modal';
@@ -7,9 +8,58 @@ import api from '../../services/api';
 import './HomePage.css';
 
 const HomePage = () => {
+  const [photos, setPhotos] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editPhoto, setEditPhoto] = useState(null);
 
+  // Fetch all photos once
+  const fetchPhotos = async () => {
+    try {
+      const response = await api.get('/index.php?api=photo&action=getAll');
+      if (response.data.success) {
+        setPhotos(response.data.photos);
+      }
+    } catch (error) {
+      console.error("Error fetching photos:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPhotos();
+  }, []);
+
+  // Compute unique tags from photos
+  const uniqueTags = useMemo(() => {
+    const allTags = photos.reduce((acc, photo) => {
+      if (photo.tags) {
+        const tagsArr = photo.tags.split(',').map(tag => tag.trim());
+        return acc.concat(tagsArr);
+      }
+      return acc;
+    }, []);
+    return [...new Set(allTags)];
+  }, [photos]);
+
+  // Filter logic
+  const filteredPhotos = useMemo(() => {
+    return photos.filter((photo) => {
+      const lowerSearch = searchQuery.toLowerCase();
+      const matchesSearch =
+        photo.title.toLowerCase().includes(lowerSearch) ||
+        photo.description.toLowerCase().includes(lowerSearch) ||
+        photo.tags.toLowerCase().includes(lowerSearch);
+
+      const matchesTag = selectedTag
+        ? photo.tags.toLowerCase().includes(selectedTag.toLowerCase())
+        : true;
+
+      return matchesSearch && matchesTag;
+    });
+  }, [photos, searchQuery, selectedTag]);
+
+  // Handlers
   const handleAddPhoto = () => {
     setEditPhoto(null);
     setShowForm(true);
@@ -25,7 +75,7 @@ const HomePage = () => {
       try {
         const response = await api.get(`/index.php?api=photo&action=delete&id=${photoId}`);
         if (response.data.success) {
-          window.location.reload();
+          fetchPhotos(); // Refresh the photo list
         } else {
           alert(response.data.message);
         }
@@ -37,7 +87,7 @@ const HomePage = () => {
 
   const handleFormSuccess = () => {
     setShowForm(false);
-    window.location.reload();
+    fetchPhotos(); // Refresh after adding/updating
   };
 
   const handleCancelForm = () => {
@@ -48,12 +98,24 @@ const HomePage = () => {
     <div className="home-page">
       <NavBar />
       <div className="home-content">
-        <div className="gallery-header">
-          <h1>Your Photos</h1>
-          <button className="add-photo-button" onClick={handleAddPhoto}>Add Photo</button>
-        </div>
-        <PhotoGallery onEditPhoto={handleEditPhoto} onDeletePhoto={handleDeletePhoto} />
         
+        {/* The combined header with search + filter + add button */}
+        <GalleryHeader
+          title="Your Photos"
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          selectedTag={selectedTag}
+          setSelectedTag={setSelectedTag}
+          uniqueTags={uniqueTags}
+          onAddPhoto={handleAddPhoto}
+        />
+        
+        <PhotoGallery
+          photos={filteredPhotos}
+          onEditPhoto={handleEditPhoto}
+          onDeletePhoto={handleDeletePhoto}
+        />
+
         {showForm && (
           <Modal onClose={handleCancelForm}>
             <PhotoForm

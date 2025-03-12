@@ -1,39 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import React from 'react';
 import PhotoCard from '../PhotoCard/PhotoCard';
 import './PhotoGallery.css';
 
-const PhotoGallery = ({ onEditPhoto, onDeletePhoto }) => {
-  const [photos, setPhotos] = useState([]);
-
-  const fetchPhotos = async () => {
-    try {
-      const response = await api.get('/index.php?api=photo&action=getAll');
-      if (response.data.success) {
-        setPhotos(response.data.photos);
-      }
-    } catch (err) {
-      console.error("Error fetching photos", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchPhotos();
-  }, []);
-
+const PhotoGallery = ({ photos, onEditPhoto, onDeletePhoto }) => {
   return (
     <div className="photo-gallery">
       {photos.length > 0 ? (
-        photos.map(photo => (
-          <PhotoCard
-            key={photo.id}
-            photo={photo}
-            onEdit={onEditPhoto}
-            onDelete={onDeletePhoto}
-          />
-        ))
+        <div className="photo-cards-container">
+          {photos.map(photo => (
+            <PhotoCard
+              key={photo.id}
+              photo={photo}
+              onEdit={onEditPhoto}
+              onDelete={onDeletePhoto}
+            />
+          ))}
+        </div>
       ) : (
-        <div className="no-photos">No photos available.</div>
+        <div className="no-photos">No photos match your criteria.</div>
       )}
     </div>
   );

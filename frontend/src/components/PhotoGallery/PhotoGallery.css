@@ -16,3 +16,10 @@
     padding: 2rem 0;
   }
   
+  .photo-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+  }

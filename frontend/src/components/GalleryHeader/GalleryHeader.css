@@ -1,0 +1,82 @@
+.gallery-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1rem;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Title on the left */
+  .gallery-header-title {
+    font-size: 2.2rem;
+    color: #343a40;
+    margin: 0;
+    flex: 1; /* pushes filter + button to the right */
+  }
+  
+  /* Container for search input + tag dropdown */
+  .gallery-filter {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  /* Search input styling */
+  .gallery-filter-input {
+    width: 200px;
+    height: 40px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 0 1rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .gallery-filter-input::placeholder {
+    color: #adb5bd;
+  }
+  
+  .gallery-filter-input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 4px rgba(13,110,253,0.3);
+    outline: none;
+  }
+  
+  /* Tag dropdown styling */
+  .gallery-filter-select {
+    width: 140px;
+    height: 40px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 0 0.5rem;
+    font-size: 1rem;
+    background-color: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .gallery-filter-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 4px rgba(13,110,253,0.3);
+    outline: none;
+  }
+  
+  /* Add Photo button, consistent with the rest of your UI */
+  .add-photo-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 0.65rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-photo-button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+  

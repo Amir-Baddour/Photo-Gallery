@@ -1,0 +1,56 @@
+/* Container styled like a small card */
+.photo-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 0 auto 1.5rem auto; /* Center and add bottom margin */
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Search input styling */
+  .filter-search {
+    flex: 1;
+    height: 45px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 0 1rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .filter-search::placeholder {
+    color: #adb5bd;
+  }
+  
+  /* Focus state for search input */
+  .filter-search:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13,110,253,0.3);
+    outline: none;
+  }
+  
+  /* Tag dropdown styling */
+  .filter-select {
+    width: 160px;
+    height: 45px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 0 1rem;
+    font-size: 1rem;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  /* Focus state for select */
+  .filter-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13,110,253,0.3);
+    outline: none;
+  }
+  
