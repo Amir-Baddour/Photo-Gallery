@@ -34,7 +34,7 @@ const HomePage = () => {
   const uniqueTags = useMemo(() => {
     const allTags = photos.reduce((acc, photo) => {
       if (photo.tags) {
-        const tagsArr = photo.tags.split(',').map(tag => tag.trim());
+        const tagsArr = photo.tags.split(' ').map(tag => tag.trim());
         return acc.concat(tagsArr);
       }
       return acc;
@@ -75,7 +75,7 @@ const HomePage = () => {
       try {
         const response = await api.get(`/index.php?api=photo&action=delete&id=${photoId}`);
         if (response.data.success) {
-          fetchPhotos(); // Refresh the photo list
+          fetchPhotos();
         } else {
           alert(response.data.message);
         }
@@ -87,7 +87,7 @@ const HomePage = () => {
 
   const handleFormSuccess = () => {
     setShowForm(false);
-    fetchPhotos(); // Refresh after adding/updating
+    fetchPhotos(); 
   };
 
   const handleCancelForm = () => {

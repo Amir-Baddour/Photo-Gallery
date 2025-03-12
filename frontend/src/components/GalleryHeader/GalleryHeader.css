@@ -8,21 +8,18 @@
     font-family: 'Poppins', sans-serif;
   }
   
-  /* Title on the left */
   .gallery-header-title {
     font-size: 2.2rem;
     color: #343a40;
     margin: 0;
-    flex: 1; /* pushes filter + button to the right */
+    flex: 1; 
   }
   
-  /* Container for search input + tag dropdown */
   .gallery-filter {
     display: flex;
     gap: 1rem;
   }
   
-  /* Search input styling */
   .gallery-filter-input {
     width: 200px;
     height: 40px;
@@ -43,7 +40,6 @@
     outline: none;
   }
   
-  /* Tag dropdown styling */
   .gallery-filter-select {
     width: 140px;
     height: 40px;
@@ -61,7 +57,6 @@
     outline: none;
   }
   
-  /* Add Photo button, consistent with the rest of your UI */
   .add-photo-button {
     background-color: #28a745;
     color: #fff;
@@ -78,5 +73,37 @@
   .add-photo-button:hover {
     background-color: #218838;
     transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    .gallery-header {
+      flex-wrap: wrap; 
+      justify-content: center;
+    }
+  
+    .gallery-header-title {
+      flex: 0 0 100%;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+  
+    .gallery-filter {
+      flex: 0 0 100%;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+  
+    .gallery-filter-input,
+    .gallery-filter-select {
+      width: 45%;
+    }
+  
+    .add-photo-button {
+      flex: 0 0 auto;
+      margin: 0.5rem auto 0;
+    }
   }
   

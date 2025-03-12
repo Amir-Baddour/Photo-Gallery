@@ -77,7 +77,7 @@ const PhotoForm = ({ photo, onSuccess, onCancel }) => {
         />
         <input
           type="text"
-          placeholder="Tags (comma separated)"
+          placeholder="Tags"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
         />

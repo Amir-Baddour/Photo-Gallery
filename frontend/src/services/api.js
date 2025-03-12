@@ -5,7 +5,7 @@ const api = axios.create({
   timeout: 10000,
 });
 
-// Request interceptor to add JWT token to headers, if present.
+// Request interceptor to add JWT token to headers, if present
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
