@@ -14,24 +14,24 @@ try {
 
     $user_id = $user['id'];
 
-    // Photo data
+    // Photo data with shorter descriptions and tags
     $photos = [
         [
             'title' => 'Paris Winter Stroll',
-            'description' => 'Eiffel Tower on a cloudy day.',
-            'tags' => '#Paris #EiffelTower #Travel #Winter',
+            'description' => 'Eiffel Tower in winter.',
+            'tags' => '#Paris #Travel #Winter',
             'image_path' => 'uploads/Paris.jpg',
         ],
         [
             'title' => 'Serene Autumn View',
-            'description' => 'A quiet lakeside bench with mountain views.',
-            'tags' => '#Autumn #Nature #Mountains #Lake #Switzerland',
+            'description' => 'Lakeside with mountains.',
+            'tags' => '#Autumn #Nature #Lake',
             'image_path' => 'uploads/Swizerland.jpg',
         ],
         [
             'title' => 'Lake Bliss',
-            'description' => 'Swans glide on a scenic lake with mountain views.',
-            'tags' => '#Lake #Swans #Nature #Mountains #Switzerland',
+            'description' => 'Swans on a peaceful lake.',
+            'tags' => '#Lake #Swans #Mountains',
             'image_path' => 'uploads/Sea.jpg',
         ]
     ];

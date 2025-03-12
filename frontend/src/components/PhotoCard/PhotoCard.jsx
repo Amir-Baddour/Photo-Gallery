@@ -3,19 +3,21 @@ import './PhotoCard.css';
 
 const PhotoCard = ({ photo, onEdit, onDelete }) => {
   const [showMenu, setShowMenu] = useState(false);
-
   const BASE_URL = 'http://localhost/photo-gallery-app/backend/';
 
+  // Toggles the dropdown menu
   const handleMenuToggle = (e) => {
-    e.stopPropagation(); // Prevent card click from closing the menu if needed
+    e.stopPropagation();
     setShowMenu(!showMenu);
   };
 
+  // Handles edit action
   const handleEdit = () => {
     setShowMenu(false);
     onEdit(photo);
   };
 
+  // Handles delete action
   const handleDelete = () => {
     setShowMenu(false);
     onDelete(photo.id);
@@ -23,14 +25,12 @@ const PhotoCard = ({ photo, onEdit, onDelete }) => {
 
   return (
     <div className="photo-card">
-      {/* Image */}
       <img
         className="photo-image"
         src={`${BASE_URL}${photo.image_path}`}
         alt={photo.title}
       />
 
-      {/* Overlay with title & description */}
       <div className="photo-overlay">
         <div className="photo-text">
           <h3 className="photo-title">{photo.title}</h3>
@@ -39,10 +39,8 @@ const PhotoCard = ({ photo, onEdit, onDelete }) => {
         </div>
       </div>
 
-      {/* Three-dot menu button (top-right) */}
       <div className="menu-button" onClick={handleMenuToggle}>•••</div>
 
-      {/* Dropdown menu for Edit & Delete */}
       {showMenu && (
         <div className="dropdown-menu" onClick={(e) => e.stopPropagation()}>
           <div className="dropdown-item" onClick={handleEdit}>Edit</div>

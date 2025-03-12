@@ -99,7 +99,6 @@ const HomePage = () => {
       <NavBar />
       <div className="home-content">
         
-        {/* The combined header with search + filter + add button */}
         <GalleryHeader
           title="Your Photos"
           searchQuery={searchQuery}

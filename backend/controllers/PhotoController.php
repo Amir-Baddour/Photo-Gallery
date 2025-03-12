@@ -12,12 +12,7 @@ class PhotoController {
         $this->photoModel = new PhotoModel($db);
     }
     
-    /**
-     * Create a new photo via multipart/form-data.
-     * Expects:
-     *   - $_POST: user_id, title, description, tags
-     *   - $_FILES['image']: the uploaded file
-     */
+    // Handles photo creation with form data and file upload
     public function createPhoto() {
         header('Content-Type: application/json');
         
@@ -27,13 +22,11 @@ class PhotoController {
         $tags        = $_POST['tags']        ?? '';
 
         if (!$user_id || empty($title)) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Missing required fields (user_id, title).'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Missing required fields (user_id, title).']);
             return;
         }
         
+        // Process image upload
         $imagePath = '';
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../uploads/';
@@ -43,42 +36,26 @@ class PhotoController {
             if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
                 $imagePath = 'uploads/' . $fileName;
             } else {
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Error moving uploaded file.'
-                ]);
+                echo json_encode(['success' => false, 'message' => 'Error moving uploaded file.']);
                 return;
             }
         } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Image file is required.'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Image file is required.']);
             return;
         }
 
-        // Create PhotoSkeleton (or use an array)
+        // Create photo entry
         $photo = new PhotoSkeleton(null, $user_id, $title, $description, $tags, $imagePath, null);
         $photoId = $this->photoModel->createPhoto($photo);
         
-        if ($photoId) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Photo created successfully.',
-                'photo_id' => $photoId
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error creating photo.'
-            ]);
-        }
+        echo json_encode([
+            'success' => $photoId ? true : false,
+            'message' => $photoId ? 'Photo created successfully.' : 'Error creating photo.',
+            'photo_id' => $photoId
+        ]);
     }
     
-    /**
-     * Retrieve all photos for the logged-in user.
-     * Uses the JWT token from the Authorization header.
-     */
+    // Retrieves all photos for the authenticated user
     public function getAllPhotos() {
         header('Content-Type: application/json');
         
@@ -87,8 +64,9 @@ class PhotoController {
             echo json_encode(['success' => false, 'message' => 'Unauthorized: No token provided.']);
             return;
         }
-        $token = str_replace('Bearer ', '', $headers['Authorization']);
+
         try {
+            $token = str_replace('Bearer ', '', $headers['Authorization']);
             $decoded = JWT::decode($token, new Key('your-very-secret-key', 'HS256'));
             $user_id = $decoded->user_id;
         } catch (Exception $e) {
@@ -100,13 +78,7 @@ class PhotoController {
         echo json_encode(['success' => true, 'photos' => $photos]);
     }
     
-    /**
-     * Update a photo via multipart/form-data.
-     * Expects:
-     *   - $_POST: id, title, description, tags
-     *   - $_FILES['image']: optional new file
-     * Checks that the photo belongs to the logged-in user.
-     */
+    // Updates an existing photo (title, description, tags, and optional new image)
     public function updatePhoto() {
         header('Content-Type: application/json');
     
@@ -115,8 +87,9 @@ class PhotoController {
             echo json_encode(['success' => false, 'message' => 'Unauthorized: No token provided.']);
             return;
         }
-        $token = str_replace('Bearer ', '', $headers['Authorization']);
+
         try {
+            $token = str_replace('Bearer ', '', $headers['Authorization']);
             $decoded = JWT::decode($token, new Key('your-very-secret-key', 'HS256'));
             $user_id = $decoded->user_id;
         } catch (Exception $e) {
@@ -124,39 +97,30 @@ class PhotoController {
             return;
         }
     
-        $id          = $_POST['id']          ?? null;
-        $title       = $_POST['title']       ?? '';
+        $id = $_POST['id'] ?? null;
+        $title = $_POST['title'] ?? '';
         $description = $_POST['description'] ?? '';
-        $tags        = $_POST['tags']        ?? '';
-    
+        $tags = $_POST['tags'] ?? '';
+
         if (!$id) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Photo ID is required.'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Photo ID is required.']);
             return;
         }
-    
+
+        // Fetch existing photo and validate ownership
         $existingPhoto = $this->photoModel->getPhotoById($id);
         if (!$existingPhoto) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Photo not found.'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Photo not found.']);
             return;
         }
-        
-        // Check if the photo belongs to the logged in user
         if ($existingPhoto['user_id'] != $user_id) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Unauthorized: You can only edit your own photos.'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Unauthorized: You can only edit your own photos.']);
             return;
         }
     
         $imagePath = $existingPhoto['image_path'];
     
+        // Handle new image upload
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../uploads/';
             $fileName = time() . '_' . basename($_FILES['image']['name']);
@@ -165,15 +129,12 @@ class PhotoController {
             if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
                 $imagePath = 'uploads/' . $fileName;
             } else {
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Error moving uploaded file.'
-                ]);
+                echo json_encode(['success' => false, 'message' => 'Error moving uploaded file.']);
                 return;
             }
         }
     
-        // Update the photo array with new values
+        // Update photo details
         $existingPhoto['title'] = $title;
         $existingPhoto['description'] = $description;
         $existingPhoto['tags'] = $tags;
@@ -181,24 +142,13 @@ class PhotoController {
     
         $updatedRows = $this->photoModel->updatePhoto($existingPhoto);
         
-        if ($updatedRows) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Photo updated successfully.'
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error updating photo.'
-            ]);
-        }
+        echo json_encode([
+            'success' => $updatedRows ? true : false,
+            'message' => $updatedRows ? 'Photo updated successfully.' : 'Error updating photo.'
+        ]);
     }
     
-    /**
-     * Delete a photo.
-     * Expects GET parameter: id.
-     * Checks that the photo belongs to the logged-in user.
-     */
+    // Deletes a photo after verifying user ownership
     public function deletePhoto() {
         header('Content-Type: application/json');
     
@@ -207,8 +157,9 @@ class PhotoController {
             echo json_encode(['success' => false, 'message' => 'Unauthorized: No token provided.']);
             return;
         }
-        $token = str_replace('Bearer ', '', $headers['Authorization']);
+
         try {
+            $token = str_replace('Bearer ', '', $headers['Authorization']);
             $decoded = JWT::decode($token, new Key('your-very-secret-key', 'HS256'));
             $user_id = $decoded->user_id;
         } catch (Exception $e) {
@@ -222,36 +173,21 @@ class PhotoController {
             return;
         }
     
+        // Fetch existing photo and validate ownership
         $existingPhoto = $this->photoModel->getPhotoById($id);
         if (!$existingPhoto) {
             echo json_encode(['success' => false, 'message' => 'Photo not found.']);
             return;
         }
-    
         if ($existingPhoto['user_id'] != $user_id) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Unauthorized: You can only delete your own photos.'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Unauthorized: You can only delete your own photos.']);
             return;
         }
     
         $deletedRows = $this->photoModel->deletePhoto($id);
-        if ($deletedRows === false) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Database error deleting photo.'
-            ]);
-        } elseif ($deletedRows === 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'No photo found with that ID.'
-            ]);
-        } else {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Photo deleted successfully.'
-            ]);
-        }
+        echo json_encode([
+            'success' => $deletedRows > 0,
+            'message' => $deletedRows > 0 ? 'Photo deleted successfully.' : 'Error deleting photo.'
+        ]);
     }
 }

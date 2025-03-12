@@ -15,12 +15,9 @@ class UserController {
         $this->userModel = new UserModel($conn);
     }
 
-    /**
-     * Handle user registration:
-     *   - Expects JSON body: { "fullname": "", "email": "", "password": "" }
-     *   - Hashes the password with SHA256
-     *   - Creates the user in the database
-     */
+    
+    //Registers a new user.
+     
     public function register() {
         header('Content-Type: application/json');
 
@@ -68,12 +65,8 @@ class UserController {
         }
     }
 
-    /**
-     * Handle user login:
-     *   - Expects JSON body: { "email": "", "password": "" }
-     *   - Verifies the email/password
-     *   - Returns a JWT if credentials are correct along with the user_id
-     */
+    // Logs in a user and returns a JWT token.
+     
     public function login() {
         header('Content-Type: application/json');
 
@@ -109,11 +102,12 @@ class UserController {
             return;
         }
 
+        // Generate JWT token
         $payload = [
             'user_id' => $foundUser->getId(),
             'email'   => $foundUser->getEmail(),
             'iat'     => time(),
-            'exp'     => time() + 3600 // 1 hour expiration
+            'exp'     => time() + 3600 // Expires in 1 hour
         ];
 
         $jwt = JWT::encode($payload, $this->secretKey, 'HS256');

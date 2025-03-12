@@ -7,11 +7,13 @@ const LoginForm = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  // Handles form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await api.post('/index.php?api=user&action=login', { email, password });
       if (response.data.success) {
+        // Store user data in local storage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user_id', response.data.user_id);
         localStorage.setItem('fullname', response.data.fullname);
