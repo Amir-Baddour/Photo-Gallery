@@ -1,34 +1,44 @@
 .home-page {
     min-height: 100vh;
-    background-color: #f0f2f5;
+    background-color: #f8f9fa; 
   }
   
   .home-content {
-    padding: 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
   }
   
   .gallery-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1rem;
   }
   
   .gallery-header h1 {
-    font-size: 2rem;
-    color: #333;
+    font-size: 2.2rem;
+    color: #343a40;
+    margin: 0;
   }
   
   .add-photo-button {
-    padding: 0.5rem 1rem;
     background-color: #28a745;
     color: #fff;
     border: none;
+    padding: 0.75rem 1.5rem;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   
   .add-photo-button:hover {
     background-color: #218838;
+    transform: translateY(-2px);
   }
   

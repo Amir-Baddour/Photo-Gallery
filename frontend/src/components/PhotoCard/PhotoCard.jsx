@@ -6,19 +6,23 @@ const PhotoCard = ({ photo, onEdit, onDelete }) => {
 
   return (
     <div className="photo-card">
-      <img
-        className="photo-image"
-        src={`${BASE_URL}${photo.image_path}`}
-        alt={photo.title}
-      />
-      <div className="photo-info">
+      <div className="photo-card-image-wrapper">
+        <img
+          className="photo-image"
+          src={`${BASE_URL}${photo.image_path}`}
+          alt={photo.title}
+        />
+      </div>
+      <div className="photo-card-content">
         <h3 className="photo-title">{photo.title}</h3>
         <p className="photo-description">{photo.description}</p>
-        <p className="photo-tags"><strong>Tags:</strong> {photo.tags}</p>
+        <p className="photo-tags">
+          <strong>Tags:</strong> {photo.tags}
+        </p>
       </div>
-      <div className="photo-actions">
-        <button onClick={() => onEdit(photo)}>Edit</button>
-        <button onClick={() => onDelete(photo.id)}>Delete</button>
+      <div className="photo-card-actions">
+        <button className="edit-button" onClick={() => onEdit(photo)}>Edit</button>
+        <button className="delete-button" onClick={() => onDelete(photo.id)}>Delete</button>
       </div>
     </div>
   );

@@ -3,7 +3,6 @@ header("Content-Type: application/json");
 
 require_once __DIR__ . '/connection/db.php';
 
-// Retrieve the API and action from query parameters.
 $api = $_GET['api'] ?? '';
 $action = $_GET['action'] ?? '';
 
@@ -15,7 +14,6 @@ if (empty($api) || empty($action)) {
     exit;
 }
 
-// Route the request based on the 'api' parameter.
 switch ($api) {
     case 'user':
         require_once __DIR__ . '/controllers/UserController.php';

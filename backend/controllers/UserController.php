@@ -122,7 +122,8 @@ class UserController {
             'success' => true,
             'message' => 'Login successful.',
             'token'   => $jwt,
-            'user_id' => $foundUser->getId()
+            'user_id' => $foundUser->getId(),
+            'fullname' => $foundUser->getFullname()
         ]);
     }
 }

@@ -1,11 +1,18 @@
 .photo-gallery {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* center cards; could also use space-evenly or space-around */
-    gap: 1rem;               /* spacing between cards */
-    max-width: 1200px;       /* limit the gallery width for a cleaner look */
-    margin: 2rem auto;       /* center horizontally with auto margin */
-    padding: 0 1rem;         /* small horizontal padding */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    justify-content: center;
+    gap: 1.5rem;          
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  .no-photos {
+    font-size: 1.2rem;
+    color: #6c757d;
+    text-align: center;
+    width: 100%;
+    padding: 2rem 0;
   }
   

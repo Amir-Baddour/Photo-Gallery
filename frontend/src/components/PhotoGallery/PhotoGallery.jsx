@@ -23,14 +23,18 @@ const PhotoGallery = ({ onEditPhoto, onDeletePhoto }) => {
 
   return (
     <div className="photo-gallery">
-      {photos.map(photo => (
-        <PhotoCard
-          key={photo.id}
-          photo={photo}
-          onEdit={onEditPhoto}
-          onDelete={onDeletePhoto}
-        />
-      ))}
+      {photos.length > 0 ? (
+        photos.map(photo => (
+          <PhotoCard
+            key={photo.id}
+            photo={photo}
+            onEdit={onEditPhoto}
+            onDelete={onDeletePhoto}
+          />
+        ))
+      ) : (
+        <div className="no-photos">No photos available.</div>
+      )}
     </div>
   );
 };

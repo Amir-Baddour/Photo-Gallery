@@ -15,7 +15,6 @@ const PhotoForm = ({ photo, onSuccess, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const formData = new FormData();
       formData.append('title', title);
@@ -36,9 +35,7 @@ const PhotoForm = ({ photo, onSuccess, onCancel }) => {
       if (photo && photo.id) {
         formData.append('id', photo.id);
         const response = await api.post('/index.php?api=photo&action=update', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+          headers: { 'Content-Type': 'multipart/form-data' }
         });
         if (response.data.success) {
           onSuccess();
@@ -47,9 +44,7 @@ const PhotoForm = ({ photo, onSuccess, onCancel }) => {
         }
       } else {
         const response = await api.post('/index.php?api=photo&action=create', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+          headers: { 'Content-Type': 'multipart/form-data' }
         });
         if (response.data.success) {
           onSuccess();

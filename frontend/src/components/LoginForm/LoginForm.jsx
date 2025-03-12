@@ -14,6 +14,7 @@ const LoginForm = ({ onLoginSuccess }) => {
       if (response.data.success) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user_id', response.data.user_id);
+        localStorage.setItem('fullname', response.data.fullname);
 
         onLoginSuccess();
       } else {

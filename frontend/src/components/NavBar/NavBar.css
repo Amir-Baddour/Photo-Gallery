@@ -2,22 +2,27 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #ffffff;
+    color: #343a40;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     padding: 1rem 2rem;
-    background-color: #007bff;
-    color: #fff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
-  .navbar-title {
-    font-size: 1.5rem;
-    font-weight: bold;
+  .navbar-welcome {
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+  
+  .navbar-username {
+    font-weight: 600;
+    color: #0d6efd; 
   }
   
   .logout-button {
-    background-color: #fff;
-    color: #007bff;
+    background-color: #dc3545; 
+    color: #fff;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.25rem;
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
@@ -25,6 +30,6 @@
   }
   
   .logout-button:hover {
-    background-color: #e6e6e6;
+    background-color: #c82333;
   }
   
