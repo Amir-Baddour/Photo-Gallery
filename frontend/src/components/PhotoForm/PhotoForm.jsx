@@ -3,17 +3,13 @@ import api from '../../services/api';
 import './PhotoForm.css';
 
 const PhotoForm = ({ photo, onSuccess, onCancel }) => {
-  // We still keep title, description, tags in state.
   const [title, setTitle] = useState(photo ? photo.title : '');
   const [description, setDescription] = useState(photo ? photo.description : '');
   const [tags, setTags] = useState(photo ? photo.tags : '');
-  // We remove image_path state and replace it with a file state:
   const [file, setFile] = useState(null);
-
   const [error, setError] = useState('');
 
   const handleFileChange = (e) => {
-    // Store the selected file in state
     setFile(e.target.files[0] || null);
   };
 
@@ -21,24 +17,24 @@ const PhotoForm = ({ photo, onSuccess, onCancel }) => {
     e.preventDefault();
 
     try {
-      // We’ll build a FormData object to handle both text fields and the file
       const formData = new FormData();
       formData.append('title', title);
       formData.append('description', description);
       formData.append('tags', tags);
-      // For demonstration, we use user_id=1 or retrieve from your auth context
-      formData.append('user_id', 1);
 
-      // If the user selected a file, append it under the name 'image'
+      const userId = localStorage.getItem('user_id');
+      if (!userId) {
+        setError("User not authenticated.");
+        return;
+      }
+      formData.append('user_id', userId);
+
       if (file) {
         formData.append('image', file);
       }
 
-      // If we're editing an existing photo, append the 'id' field
       if (photo && photo.id) {
         formData.append('id', photo.id);
-
-        // Make a POST request to update
         const response = await api.post('/index.php?api=photo&action=update', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -50,7 +46,6 @@ const PhotoForm = ({ photo, onSuccess, onCancel }) => {
           setError(response.data.message);
         }
       } else {
-        // Otherwise, create a new photo
         const response = await api.post('/index.php?api=photo&action=create', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'

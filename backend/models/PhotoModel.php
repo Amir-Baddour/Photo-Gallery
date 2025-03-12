@@ -10,8 +10,6 @@ class PhotoModel {
 
     // Creates a new photo and returns the inserted photo ID.
     public function createPhoto($photo) {
-        // Here, $photo can still be a PhotoSkeleton object or an array.
-        // If it's a PhotoSkeleton, just call the getters. If it's an array, use array keys.
         try {
             $sql = "INSERT INTO photos (user_id, title, description, tags, image_path, created_at)
                     VALUES (:user_id, :title, :description, :tags, :image_path, NOW())";
@@ -52,7 +50,6 @@ class PhotoModel {
     }
 
     // Updates a photo; returns the number of affected rows.
-    // Accepts either an array or a PhotoSkeleton, similar to createPhoto.
     public function updatePhoto($photo) {
         try {
             $sql = "UPDATE photos 
@@ -74,8 +71,6 @@ class PhotoModel {
     }
 
     // Deletes a photo by its ID; returns the number of affected rows.
-    // In PhotoModel.php
-
     public function deletePhoto($id) {
         try {
             $sql = "DELETE FROM photos WHERE id = :id";
@@ -89,10 +84,8 @@ class PhotoModel {
             $result = $checkStmt->fetch(PDO::FETCH_ASSOC);
             
             if ($result && $result['cnt'] == 0) {
-                // The photo is gone; return a success value (1)
                 return 1;
             } else {
-                // The photo still exists (or something went wrong)
                 return 0;
             }
         } catch (PDOException $e) {
@@ -101,15 +94,21 @@ class PhotoModel {
         }
     }
 
-
     // Retrieves all photos as associative arrays, ordered by creation date in descending order.
     public function getAllPhotos() {
         $sql = "SELECT * FROM photos ORDER BY created_at DESC";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Directly return the array of rows
+        return $rows;
+    }
+    
+    // NEW: Retrieves photos for a given user ID.
+    public function getPhotosByUserId($user_id) {
+        $sql = "SELECT * FROM photos WHERE user_id = :user_id ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':user_id' => $user_id]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $rows;
     }
 }

@@ -54,7 +54,6 @@ const HomePage = () => {
         </div>
         <PhotoGallery onEditPhoto={handleEditPhoto} onDeletePhoto={handleDeletePhoto} />
         
-        {/* Instead of inline rendering PhotoForm, use a Modal */}
         {showForm && (
           <Modal onClose={handleCancelForm}>
             <PhotoForm

@@ -14,7 +14,6 @@ class UserSkeleton {
         $this->created_at = $created_at;
     }
 
-    // Getters and setters
     public function getId() {
         return $this->id;
     }

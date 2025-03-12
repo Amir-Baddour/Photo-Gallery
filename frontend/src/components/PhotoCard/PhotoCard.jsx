@@ -1,5 +1,3 @@
-// frontend/src/components/PhotoCard.jsx
-
 import React from 'react';
 import './PhotoCard.css';
 

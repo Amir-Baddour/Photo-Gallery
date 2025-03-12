@@ -72,7 +72,7 @@ class UserController {
      * Handle user login:
      *   - Expects JSON body: { "email": "", "password": "" }
      *   - Verifies the email/password
-     *   - Returns a JWT if credentials are correct
+     *   - Returns a JWT if credentials are correct along with the user_id
      */
     public function login() {
         header('Content-Type: application/json');
@@ -121,7 +121,8 @@ class UserController {
         echo json_encode([
             'success' => true,
             'message' => 'Login successful.',
-            'token'   => $jwt
+            'token'   => $jwt,
+            'user_id' => $foundUser->getId()
         ]);
     }
 }
