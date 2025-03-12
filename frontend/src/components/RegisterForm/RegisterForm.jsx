@@ -1,4 +1,3 @@
-// frontend/src/components/RegisterForm.jsx
 import React, { useState } from 'react';
 import api from '../../services/api';
 import './RegisterForm.css';
@@ -31,7 +30,6 @@ const RegisterForm = ({ onRegisterSuccess }) => {
       <h2 className="register-title">Register</h2>
       {error && <p className="error-msg">{error}</p>}
       {message && <p className="success-msg">{message}</p>}
-
       <form onSubmit={handleSubmit} className="register-form">
         <input
           type="text"
@@ -56,7 +54,6 @@ const RegisterForm = ({ onRegisterSuccess }) => {
         />
         <button type="submit" className="register-button">Register</button>
       </form>
-
       <div className="login-link">
         Already have an account? <a href="/login">Login here</a>
       </div>
