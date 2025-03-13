@@ -4,7 +4,7 @@ import './RegisterPage.css';
 
 const RegisterPage = () => {
   const handleRegisterSuccess = () => {
-    window.location.href = '/login';
+    window.location.href = '/';
   };
 
   return (

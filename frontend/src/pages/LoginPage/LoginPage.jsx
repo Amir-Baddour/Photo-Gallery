@@ -4,7 +4,7 @@ import './LoginPage.css';
 
 const LoginPage = () => {
   const handleLoginSuccess = () => {
-    window.location.href = '/';
+    window.location.href = '/home';
   };
 
   return (

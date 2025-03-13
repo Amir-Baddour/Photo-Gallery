@@ -8,7 +8,7 @@ const NavBar = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user_id');
     localStorage.removeItem('fullname'); 
-    window.location.href = '/login';
+    window.location.href = '/';
   };
 
   return (
